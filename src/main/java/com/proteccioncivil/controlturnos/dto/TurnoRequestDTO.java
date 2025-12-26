@@ -15,4 +15,7 @@ public class TurnoRequestDTO {
     public List<String> companeros;
 
     public Boolean especial;
+
+    public String usuarioId; // "B-16"
+
 }

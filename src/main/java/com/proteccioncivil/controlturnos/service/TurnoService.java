@@ -66,6 +66,8 @@ public class TurnoService {
         turno.setCompaneros(dto.companeros);
         turno.setEspecial(dto.especial);
 
+        turno.setUsuarioId(dto.usuarioId);
+
         // cálculo horas
         double horas = calcularHoras(turno.getHoraInicio(), turno.getHoraFin());
         turno.setHorasTotales(horas);
