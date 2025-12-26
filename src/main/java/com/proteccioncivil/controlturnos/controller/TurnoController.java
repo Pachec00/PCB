@@ -26,4 +26,18 @@ public class TurnoController {
     public TurnoResponseDTO crearTurno(@RequestBody TurnoRequestDTO dto) {
         return turnoService.crearTurno(dto);
     }
+
+    @PutMapping("/{id}")
+    public TurnoResponseDTO actualizarTurno(
+            @PathVariable String id,
+            @RequestBody TurnoRequestDTO dto
+    ) {
+        return turnoService.actualizarTurno(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void borrarTurno(@PathVariable String id) {
+        turnoService.borrarTurno(id);
+    }
+
 }

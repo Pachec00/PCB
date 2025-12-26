@@ -11,9 +11,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.time.YearMonth;
+
 
 @Service
 public class TurnoService {
+
+    private final PagoService pagoService;
+
+    public TurnoService(PagoService pagoService) {
+        this.pagoService = pagoService;
+    }
+
 
     // almacenamiento temporal en memoria (luego Firestore)
     private final List<Turno> turnos = new ArrayList<>();
@@ -23,6 +32,26 @@ public class TurnoService {
     }
 
     public TurnoResponseDTO crearTurno(TurnoRequestDTO dto) {
+
+        YearMonth mes = YearMonth.from(LocalDate.parse(dto.fecha));
+
+        if (pagoService.estaMesPagado(mes)) {
+            throw new IllegalArgumentException(
+                    "No se pueden crear turnos en un mes ya pagado (" + mes + ")"
+            );
+        }
+
+
+        if (dto.fecha == null || dto.horaInicio == null || dto.horaFin == null) {
+            throw new IllegalArgumentException("Fecha y horas son obligatorias");
+        }
+
+        LocalTime inicio = LocalTime.parse(dto.horaInicio);
+        LocalTime fin = LocalTime.parse(dto.horaFin);
+
+        if (fin.isBefore(inicio)) {
+            throw new IllegalArgumentException("La hora fin no puede ser anterior a la hora inicio");
+        }
 
         Turno turno = new Turno();
         turno.setId(UUID.randomUUID().toString());
@@ -77,4 +106,72 @@ public class TurnoService {
 
         return dto;
     }
+
+    public TurnoResponseDTO actualizarTurno(String id, TurnoRequestDTO dto) {
+
+        Turno turno = turnos.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Turno no encontrado"));
+
+        YearMonth mes = YearMonth.from(turno.getFecha());
+
+        if (pagoService.estaMesPagado(mes)) {
+            throw new IllegalArgumentException(
+                    "No se pueden modificar turnos de un mes ya pagado (" + mes + ")"
+            );
+        }
+
+
+        if (dto.fecha != null) {
+            turno.setFecha(LocalDate.parse(dto.fecha));
+        }
+        if (dto.horaInicio != null) {
+            turno.setHoraInicio(LocalTime.parse(dto.horaInicio));
+        }
+        if (dto.horaFin != null) {
+            turno.setHoraFin(LocalTime.parse(dto.horaFin));
+        }
+
+        turno.setRol(dto.rol);
+        turno.setObservaciones(dto.observaciones);
+        turno.setPracticas(dto.practicas);
+        turno.setCompaneros(dto.companeros);
+
+        if (dto.especial != null) {
+            turno.setEspecial(dto.especial);
+        }
+
+        double horas = calcularHoras(turno.getHoraInicio(), turno.getHoraFin());
+        turno.setHorasTotales(horas);
+        turno.setRemuneracion(calcularRemuneracion(horas, turno.isEspecial()));
+
+        return toResponse(turno);
+    }
+
+
+    public void borrarTurno(String id) {
+
+        Turno turno = turnos.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Turno no encontrado"));
+
+        YearMonth mes = YearMonth.from(turno.getFecha());
+
+        if (pagoService.estaMesPagado(mes)) {
+            throw new IllegalArgumentException(
+                    "No se pueden borrar turnos de un mes ya pagado (" + mes + ")"
+            );
+        }
+
+        turnos.remove(turno);
+    }
+
+
+    public List<Turno> obtenerTurnosInternos() {
+        return turnos;
+    }
+
+
 }

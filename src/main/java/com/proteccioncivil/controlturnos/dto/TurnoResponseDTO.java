@@ -15,8 +15,8 @@ public class TurnoResponseDTO {
     public List<String> practicas;
     public List<String> companeros;
 
-    public boolean especial;
+    public Boolean especial;
 
-    public double horasTotales;
-    public double remuneracion;
+    public Double horasTotales;
+    public Double remuneracion;
 }
