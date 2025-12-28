@@ -1,37 +1,36 @@
 package com.proteccioncivil.controlturnos.controller;
 
 import com.proteccioncivil.controlturnos.dto.LoginRequestDTO;
+import com.proteccioncivil.controlturnos.dto.LoginRequestDTO;
 import com.proteccioncivil.controlturnos.dto.LoginResponseDTO;
-import com.proteccioncivil.controlturnos.model.Usuario;
-import com.proteccioncivil.controlturnos.service.UsuarioService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final UsuarioService usuarioService;
-
-    public AuthController(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
-
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody LoginRequestDTO request) {
 
-        Usuario usuario = usuarioService
-                .autenticar(request.username, request.password)
-                .orElseThrow(() -> new IllegalArgumentException("Credenciales incorrectas"));
+        if ("B-16".equals(request.getUsername())
+                && "1234".equals(request.getPassword())) {
 
-        LoginResponseDTO response = new LoginResponseDTO();
-        response.token = "fake-token-" + usuario.getId();
+            LoginResponseDTO response = new LoginResponseDTO();
+            response.token = ""; // más adelante JWT / Firebase
 
-        LoginResponseDTO.UsuarioDTO usuarioDTO = new LoginResponseDTO.UsuarioDTO();
-        usuarioDTO.id = usuario.getId();
-        usuarioDTO.nombre = usuario.getNombre();
+            LoginResponseDTO.UsuarioDTO usuario = new LoginResponseDTO.UsuarioDTO();
+            usuario.id = "B-16";
+            usuario.nombre = "Usuario B-16";
 
-        response.usuario = usuarioDTO;
+            response.usuario = usuario;
+            return response;
+        }
 
-        return response;
+        throw new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED,
+                "Credenciales incorrectas"
+        );
     }
 }
