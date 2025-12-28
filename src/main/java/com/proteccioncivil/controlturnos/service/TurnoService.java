@@ -89,7 +89,7 @@ public class TurnoService {
         return horas * precioHora;
     }
 
-    private TurnoResponseDTO toResponse(Turno turno) {
+    TurnoResponseDTO toResponse(Turno turno) {
         TurnoResponseDTO dto = new TurnoResponseDTO();
 
         dto.id = turno.getId();
@@ -174,6 +174,14 @@ public class TurnoService {
     public List<Turno> obtenerTurnosInternos() {
         return turnos;
     }
+
+    public List<Turno> obtenerTurnosDeUsuarioYMes(String usuarioId, YearMonth mes) {
+        return turnos.stream()
+                .filter(t -> t.getUsuarioId().equalsIgnoreCase(usuarioId))
+                .filter(t -> YearMonth.from(t.getFecha()).equals(mes))
+                .toList();
+    }
+
 
 
 }
