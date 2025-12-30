@@ -12,7 +12,7 @@ public class TurnoResponseDTO {
     public String rol;
     public String observaciones;
 
-    public List<String> practicas;
+    public boolean practicas;
     public List<String> companeros;
 
     public Boolean especial;

@@ -24,8 +24,17 @@ public class TurnoController {
 
     @PostMapping
     public TurnoResponseDTO crearTurno(@RequestBody TurnoRequestDTO dto) {
+        System.out.println("DTO recibido:");
+        System.out.println("usuarioId = " + dto.usuarioId);
+        System.out.println("fecha = " + dto.fecha);
+        System.out.println("horaInicio = " + dto.horaInicio);
+        System.out.println("horaFin = " + dto.horaFin);
+        System.out.println("rol = " + dto.rol);
+        System.out.println("especial = " + dto.especial);
+
         return turnoService.crearTurno(dto);
     }
+
 
     @PutMapping("/{id}")
     public TurnoResponseDTO actualizarTurno(
@@ -39,5 +48,7 @@ public class TurnoController {
     public void borrarTurno(@PathVariable String id) {
         turnoService.borrarTurno(id);
     }
+
+
 
 }

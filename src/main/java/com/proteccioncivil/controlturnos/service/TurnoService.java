@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.time.YearMonth;
@@ -63,7 +64,7 @@ public class TurnoService {
         turno.setRol(dto.rol);
         turno.setObservaciones(dto.observaciones);
         turno.setPracticas(dto.practicas);
-        turno.setCompaneros(dto.companeros);
+        turno.setCompaneros(dto.companeros != null ? dto.companeros : new ArrayList<>());
         turno.setEspecial(dto.especial);
 
         turno.setUsuarioId(dto.usuarioId);

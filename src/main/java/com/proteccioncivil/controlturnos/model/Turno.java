@@ -3,6 +3,8 @@ package com.proteccioncivil.controlturnos.model;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.ArrayList;
+
 
 public class Turno {
 
@@ -16,8 +18,8 @@ public class Turno {
     private String rol;
     private String observaciones;
 
-    private List<String> practicas;
-    private List<String> companeros;
+    private boolean practicas;
+    private List<String> companeros = new ArrayList<>();
 
     private boolean especial;
 
@@ -82,11 +84,11 @@ public class Turno {
         this.observaciones = observaciones;
     }
 
-    public List<String> getPracticas() {
+    public boolean getPracticas() {
         return practicas;
     }
 
-    public void setPracticas(List<String> practicas) {
+    public void setPracticas(boolean practicas) {
         this.practicas = practicas;
     }
 
